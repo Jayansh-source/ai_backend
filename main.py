@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify, session
+from flask_cors import CORS
 import requests
 import uuid
+import os
 
 app = Flask(__name__)
+CORS(app)
 app.secret_key = '1234'
 
 BASE_URL = "https://wormai.blackaddon3907.workers.dev/?prompt="
@@ -47,5 +50,7 @@ def clear_memory(chat_id):
     else:
         return jsonify({'status': 'error', 'message': 'Chat not found.'}), 404
 
+# ✅ FIX FOR RENDER
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
