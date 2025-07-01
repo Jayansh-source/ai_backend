@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify, session
+from flask_cors import CORS
 import requests
 import uuid
+import os
 
 app = Flask(__name__)
+CORS(app)
 app.secret_key = '1234'
 
 BASE_URL = "https://wormai.blackaddon3907.workers.dev/?prompt="
@@ -21,7 +24,6 @@ def send():
 
     memory[chat_id].append(f"User: {user_msg}")
 
-    # Join chat history
     full_prompt = "\n".join(memory[chat_id]) + "\nAI:"
     full_url = BASE_URL + requests.utils.quote(full_prompt)
 
@@ -47,5 +49,7 @@ def clear_memory(chat_id):
     else:
         return jsonify({'status': 'error', 'message': 'Chat not found.'}), 404
 
+# ✅ FINAL BIND FIX for Render.com
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
